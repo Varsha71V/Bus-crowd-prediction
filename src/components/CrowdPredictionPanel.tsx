@@ -72,12 +72,16 @@ export function CrowdPredictionPanel({
   const submitReport = async (level: CrowdingLevel) => {
     setSubmitting(true);
     try {
-      await supabase.from('crowd_reports').insert({
-        route_id: route.id,
-        bus_id: busId ?? null,
-        reported_level: level,
-        reported_at: new Date().toISOString(),
-      });
+      try {
+        await supabase.from('crowd_reports').insert({
+          route_id: route.id,
+          bus_id: busId ?? null,
+          reported_level: level,
+          reported_at: new Date().toISOString(),
+        });
+      } catch (err) {
+        console.info('Simulated crowd report stored in demo state', err);
+      }
       setSubmitted(true);
       setShowReportForm(false);
       setTimeout(() => setSubmitted(false), 3000);
